@@ -4,7 +4,6 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-
 import javafx.stage.Stage;
 
 public class BankAppUI extends Application {
@@ -21,12 +20,12 @@ public class BankAppUI extends Application {
 
         TextField amountField = new TextField();
         amountField.setPromptText("Enter Amount");
-        
-         // Set same width for all text fields
-         double textFieldWidth = 250;  // Define a fixed width for the text fields
-         nameField.setPrefWidth(textFieldWidth);
-         depositField.setPrefWidth(textFieldWidth);
-         amountField.setPrefWidth(textFieldWidth);
+
+        // Set same width for all text fields
+        double textFieldWidth = 250;  // Define a fixed width for the text fields
+        nameField.setPrefWidth(textFieldWidth);
+        depositField.setPrefWidth(textFieldWidth);
+        amountField.setPrefWidth(textFieldWidth);
 
         // ComboBox for selecting account type
         ComboBox<String> accountTypeBox = new ComboBox<>();
@@ -46,7 +45,7 @@ public class BankAppUI extends Application {
         withdrawButton.setStyle("-fx-background-color: #FF5722; -fx-text-fill: white;");
         viewBalanceButton.setStyle("-fx-background-color: #9C27B0; -fx-text-fill: white;");
         viewTransactionsButton.setStyle("-fx-background-color: #795548; -fx-text-fill: white;");
-       
+
         // Set the same preferred width for all transaction buttons
         double buttonWidth = 250; // Define a fixed width
         depositButton.setPrefWidth(buttonWidth);
@@ -86,6 +85,18 @@ public class BankAppUI extends Application {
                 outputArea.appendText("✔ Created " + type + " account for " + name + " with $" + deposit + "\n");
                 nameField.clear(); // Clear input fields
                 depositField.clear();
+
+                // Display specific account info based on the type
+                if (type.equals("Fixed Deposit")) {
+                    outputArea.appendText(" - No deposits allowed after account creation\n");
+                    outputArea.appendText(" - Withdrawals only allowed after maturity\n");
+                    depositButton.setDisable(true);
+                    withdrawButton.setDisable(true);
+                } else {
+                    depositButton.setDisable(false);
+                    withdrawButton.setDisable(false);
+                }
+
             } catch (NumberFormatException ex) {
                 outputArea.appendText("⚠ Please enter a valid initial deposit amount.\n");
             }
@@ -102,6 +113,8 @@ public class BankAppUI extends Application {
                 currentAccount.deposit(amount);
                 outputArea.appendText("+ Deposited $" + amount + "\n");
                 amountField.clear(); // Clear input field after deposit
+            } catch (IllegalStateException ex) {
+                outputArea.appendText(ex.getMessage() + "\n");
             } catch (NumberFormatException ex) {
                 outputArea.appendText("⚠ Invalid deposit amount.\n");
             }
@@ -116,8 +129,10 @@ public class BankAppUI extends Application {
             try {
                 double amount = Double.parseDouble(amountField.getText());
                 currentAccount.withdraw(amount);
-                outputArea.appendText("- Attempted withdrawal of $" + amount + "\n");
+                outputArea.appendText("- Successfully withdrew $" + amount + "\n");
                 amountField.clear(); // Clear input field after withdrawal
+            } catch (IllegalStateException ex) {
+                outputArea.appendText(ex.getMessage() + "\n");
             } catch (NumberFormatException ex) {
                 outputArea.appendText("⚠ Invalid withdrawal amount.\n");
             }
@@ -162,10 +177,10 @@ public class BankAppUI extends Application {
 
         // Main Layout container
         HBox mainBox = new HBox(20, accountInfoBox, transactionBox);
-        
+
         HBox.setHgrow(accountInfoBox, Priority.ALWAYS);
         HBox.setHgrow(transactionBox, Priority.ALWAYS);
-        
+
         mainBox.setAlignment(Pos.CENTER);  // Center the boxes inside the HBox 
 
         VBox root = new VBox(20, mainBox, outputBox);

@@ -38,15 +38,17 @@ public class SavingsAccount extends BankAccount {
      * @param amount The amount to withdraw.
      */
     @Override
-    public void withdraw(double amount) {
-        // Check if the withdrawal will keep the balance above the minimum balance
-        if ((balance - amount) >= minimumBalance) {
-            balance -= amount; // Deduct the amount from the balance
-            addTransaction("Withdraw", amount); // Record the withdrawal transaction
-        } else {
-            System.out.println("Minimum balance of 500 required"); // Warn the user if minimum balance is violated
-        }
+public void withdraw(double amount) {
+    // Check if the withdrawal amount will not cause the balance to fall below the minimum required balance (₦500).
+    if ((balance - amount) >= minimumBalance) {
+        balance -= amount; // Deduct the withdrawal amount from the balance if the condition is satisfied.
+        addTransaction("Withdraw", amount); // Record the withdrawal transaction in the transaction history.
+    } else {
+        // If the withdrawal would cause the balance to fall below the minimum required balance, throw an exception.
+        throw new IllegalStateException("⚠ Minimum balance of $500 required");
     }
+}
+    
 
     /**
      * Returns the current balance of the savings account.

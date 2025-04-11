@@ -39,12 +39,14 @@ public class CurrentAccount extends BankAccount {
      */
     @Override
     public void withdraw(double amount) {
-        // Check if the withdrawal will keep the balance within the overdraft limit
-        if (balance - amount >= -overDraftLimit) {
-            balance -= amount; // Deduct the amount from the balance
-            addTransaction("Withdraw", amount); // Record the withdrawal transaction
+        // Check if the withdrawal amount does not exceed the overdraft limit.
+        // The balance minus the withdrawal amount should not be less than the negative overdraft limit.
+        if ((balance - amount) >= -overDraftLimit) {
+            balance -= amount; // Deduct the amount from the balance if the withdrawal is allowed.
+            addTransaction("Withdraw", amount); // Record the withdrawal transaction in the transaction history.
         } else {
-            System.out.println("Overdraft limit exceeded"); // Warn the user if the overdraft limit is exceeded
+            // If the withdrawal amount exceeds the overdraft limit, throw an exception with an appropriate message.
+            throw new IllegalStateException("⚠ Overdraft limit of $1000 exceeded");
         }
     }
 
