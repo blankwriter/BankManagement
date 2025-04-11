@@ -4,6 +4,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
+
 import javafx.stage.Stage;
 
 public class BankAppUI extends Application {
@@ -20,6 +21,12 @@ public class BankAppUI extends Application {
 
         TextField amountField = new TextField();
         amountField.setPromptText("Enter Amount");
+        
+         // Set same width for all text fields
+         double textFieldWidth = 250;  // Define a fixed width for the text fields
+         nameField.setPrefWidth(textFieldWidth);
+         depositField.setPrefWidth(textFieldWidth);
+         amountField.setPrefWidth(textFieldWidth);
 
         // ComboBox for selecting account type
         ComboBox<String> accountTypeBox = new ComboBox<>();
@@ -39,6 +46,13 @@ public class BankAppUI extends Application {
         withdrawButton.setStyle("-fx-background-color: #FF5722; -fx-text-fill: white;");
         viewBalanceButton.setStyle("-fx-background-color: #9C27B0; -fx-text-fill: white;");
         viewTransactionsButton.setStyle("-fx-background-color: #795548; -fx-text-fill: white;");
+       
+        // Set the same preferred width for all transaction buttons
+        double buttonWidth = 250; // Define a fixed width
+        depositButton.setPrefWidth(buttonWidth);
+        withdrawButton.setPrefWidth(buttonWidth);
+        viewBalanceButton.setPrefWidth(buttonWidth);
+        viewTransactionsButton.setPrefWidth(buttonWidth);
 
         // Output area for transaction logs and messages
         TextArea outputArea = new TextArea();
@@ -137,19 +151,22 @@ public class BankAppUI extends Application {
             new Label("Account Type:"), accountTypeBox,
             createButton
         );
-        //accountInfoBox.setAlignment(Pos.CENTER);  // Center the account info box
+        accountInfoBox.setAlignment(Pos.CENTER);  // Center the account info box
         VBox transactionBox = new VBox(10,
             new Label("Transaction Amount:"), amountField,
             depositButton, withdrawButton, viewBalanceButton, viewTransactionsButton
         );
-        transactionBox.setAlignment(Pos.CENTER_RIGHT);  // Center the transaction box 
+        transactionBox.setAlignment(Pos.CENTER);  // Center the transaction box 
 
         VBox outputBox = new VBox(10, new Label("History:"), outputArea);
 
         // Main Layout container
         HBox mainBox = new HBox(20, accountInfoBox, transactionBox);
-
-        //mainBox.setAlignment(Pos.CENTER);  // Center the boxes inside the HBox 
+        
+        HBox.setHgrow(accountInfoBox, Priority.ALWAYS);
+        HBox.setHgrow(transactionBox, Priority.ALWAYS);
+        
+        mainBox.setAlignment(Pos.CENTER);  // Center the boxes inside the HBox 
 
         VBox root = new VBox(20, mainBox, outputBox);
         root.setPadding(new Insets(15));
